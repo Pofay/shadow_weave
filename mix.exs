@@ -1,9 +1,9 @@
-defmodule Servy.MixProject do
+defmodule ShadowWeave.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :servy,
+      app: :shadow_weave,
       version: "0.1.0",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,

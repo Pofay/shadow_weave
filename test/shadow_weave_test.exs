@@ -1,6 +1,6 @@
-defmodule ServyTest do
+defmodule ShadowWeaveTest do
   use ExUnit.Case
-  doctest Servy
+  doctest ShadowWeave
 
   test "greets the world" do
     assert Servy.hello() == :world

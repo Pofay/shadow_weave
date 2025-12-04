@@ -1,4 +1,4 @@
-defmodule Servy.Handler do
+defmodule ShadowWeave.Handler do
   def handle_request(request) do
     request
     |> parse()
@@ -41,5 +41,5 @@ Content-Length: 20
 Owlbears, Beholders, Dragons
 """
 
-response = Servy.Handler.handle_request(request)
+response = ShadowWeave.Handler.handle_request(request)
 IO.puts(response)
