@@ -1,16 +1,16 @@
-# Servy
+# ShadowWeave 
 
 **TODO: Add description**
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `servy` to your list of dependencies in `mix.exs`:
+by adding `shadow_weave` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:servy, "~> 0.1.0"}
+    {:shadow_weave, "~> 0.1.0"}
   ]
 end
 ```
