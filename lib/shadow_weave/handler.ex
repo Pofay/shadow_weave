@@ -17,16 +17,16 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(conv) do
-    conv = %{method: "GET", path: "/wildthings", resp_body: "Owlbears, Beholders, Dragons"}
+    %{conv | resp_body: "Owlbears, Beholders, Dragons"}
   end
 
   def format_response(conv) do
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{byte_size(conv.resp_body)}
 
-    Owlbears, Beholders, Dragons
+    #{conv.resp_body}
     """
   end
 end
