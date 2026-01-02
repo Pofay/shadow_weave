@@ -16,25 +16,40 @@ defmodule ShadowWeave.Handler do
       |> List.first()
       |> String.split(" ")
 
-    %{method: method, path: path, resp_body: ""}
+    %{method: method, path: path, resp_body: "", status: nil}
   end
 
   def route(%{method: "GET", path: "/wildthings"} = conv) do
-    %{conv | resp_body: "Owlbears, Beholders, Dragons"}
+    %{conv | resp_body: "Owlbears, Beholders, Dragons", status: 200}
   end
 
   def route(%{method: "GET", path: "/owlbears"} = conv) do
-    %{conv | resp_body: "Margot, Richter, Dario"}
+    %{conv | resp_body: "Margot, Richter, Dario", status: 200}
+  end
+
+  def route(%{method: "GET", path: "/owlbears/" <> id} = conv) do
+    %{conv | resp_body: "Owlbear #{id}", status: 200}
+  end
+
+  def route(%{method: _method, path: path, status: _status} = conv) do
+    %{conv | resp_body: "Shar guards this place. 404 Error at #{path}", status: 404}
   end
 
   def format_response(conv) do
     """
-    HTTP/1.1 200 OK
+    HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
     Content-Type: text/html
     Content-Length: #{byte_size(conv.resp_body)}
 
     #{conv.resp_body}
     """
+  end
+
+  defp status_reason(code) do
+    %{
+      200 => "OK",
+      404 => "Not Found"
+    }[code]
   end
 end
 
@@ -62,6 +77,13 @@ Accept: */*
 
 """
 
+request4 = """
+GET /owlbears/1 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
 
 expected_response = """
 HTTP/1.1 200 OK
@@ -79,3 +101,6 @@ IO.puts(response2)
 
 response3 = ShadowWeave.Handler.handle_request(request3)
 IO.puts(response3)
+
+response4 = ShadowWeave.Handler.handle_request(request4)
+IO.puts(response4)
