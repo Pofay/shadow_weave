@@ -31,8 +31,12 @@ defmodule ShadowWeave.Handler do
     %{conv | resp_body: "Owlbear #{id}", status: 200}
   end
 
+  def route(%{method: "DELETE", path: "/owlbears/" <> id} = conv) do
+    %{conv | resp_body: "You do not have the strength to kill Owlbear #{id}.", status: 403}
+  end
+
   def route(%{method: _method, path: path, status: _status} = conv) do
-    %{conv | resp_body: "Shar guards this place. 404 Error at #{path}", status: 404}
+    %{conv | resp_body: "Beware! You have entered Shar's Domain. 404 Error at #{path}", status: 404}
   end
 
   def format_response(conv) do
@@ -48,7 +52,8 @@ defmodule ShadowWeave.Handler do
   defp status_reason(code) do
     %{
       200 => "OK",
-      404 => "Not Found"
+      404 => "Not Found",
+      403 => "Forbidden"
     }[code]
   end
 end
@@ -85,6 +90,14 @@ Accept: */*
 
 """
 
+request5 = """
+DELETE /owlbears/2 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
 expected_response = """
 HTTP/1.1 200 OK
 Content-Type: text/html
@@ -104,3 +117,6 @@ IO.puts(response3)
 
 response4 = ShadowWeave.Handler.handle_request(request4)
 IO.puts(response4)
+
+response5 = ShadowWeave.Handler.handle_request(request5)
+IO.puts(response5)
