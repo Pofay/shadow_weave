@@ -5,6 +5,7 @@ defmodule ShadowWeave.Handler do
     |> rewrite_path()
     |> log
     |> route()
+    |> emojiify()
     |> track()
     |> format_response()
   end
@@ -30,6 +31,10 @@ defmodule ShadowWeave.Handler do
 
   def rewrite_path(%{path: "/wildlife"} = conv) do
     %{conv | path: "/wildthings"}
+  end
+
+  def rewrite_path(%{path: "/owldbears?id=" <> id} = conv) do
+    %{conv | path: "/owlbears/#{id}"}
   end
 
   def rewrite_path(conv), do: conv
@@ -67,6 +72,21 @@ defmodule ShadowWeave.Handler do
     #{conv.resp_body}
     """
   end
+
+  def emojiify(%{status: 200} = conv) do
+    %{conv | resp_body: "✨ #{conv.resp_body} ✨"}
+  end
+
+  def emojiify(%{status: 404} = conv) do
+    %{conv | resp_body: "💀 #{conv.resp_body} 💀"}
+  end
+
+  def emojiify(%{status: 403} = conv) do
+    %{conv | resp_body: "⛔ #{conv.resp_body} ⛔"}
+  end
+
+  def emojiify(conv), do: conv
+
 
   defp status_reason(code) do
     %{
@@ -117,12 +137,12 @@ Accept: */*
 
 """
 
-expected_response = """
-HTTP/1.1 200 OK
-Content-Type: text/html
-Content-Length: 20
+request6 = """
+GET /owldbears?id=3 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
 
-Owlbears, Beholders, Dragons
 """
 
 response = ShadowWeave.Handler.handle_request(request)
@@ -139,3 +159,9 @@ IO.puts(response4)
 
 response5 = ShadowWeave.Handler.handle_request(request5)
 IO.puts(response5)
+
+response6 = ShadowWeave.Handler.handle_request(request6)
+IO.puts(response6)
+
+response6 = ShadowWeave.Handler.handle_request(request6)
+IO.puts(response6)
