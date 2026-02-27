@@ -39,6 +39,10 @@ defmodule ShadowWeave.Handler do
 
   def rewrite_path(conv), do: conv
 
+  def route(%{method: "GET", path: "/about"} = conv) do
+    %{conv | resp_body: "ABOUT PAGE.", status: 200}
+  end
+
   def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{conv | resp_body: "Owlbears, Beholders, Dragons", status: 200}
   end
@@ -86,7 +90,6 @@ defmodule ShadowWeave.Handler do
   end
 
   def emojiify(conv), do: conv
-
 
   defp status_reason(code) do
     %{
@@ -145,6 +148,14 @@ Accept: */*
 
 """
 
+request7 = """
+GET /about HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
 response = ShadowWeave.Handler.handle_request(request)
 IO.puts(response)
 
@@ -165,3 +176,6 @@ IO.puts(response6)
 
 response6 = ShadowWeave.Handler.handle_request(request6)
 IO.puts(response6)
+
+response7 = ShadowWeave.Handler.handle_request(request7)
+IO.puts(response7)
