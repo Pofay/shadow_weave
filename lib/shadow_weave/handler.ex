@@ -39,8 +39,31 @@ defmodule ShadowWeave.Handler do
 
   def rewrite_path(conv), do: conv
 
+  def route(%{method: "GET", path: "/pages/" <> file} = conv) do
+    {status, content} =
+      Path.expand("../../pages", __DIR__)
+      |> Path.join(file <> ".html")
+      |> read_file()
+
+    %{conv | resp_body: content, status: status}
+  end
+
+  def route(%{method: "GET", path: "/owlbears/new"} = conv) do
+    {status, content} =
+      Path.expand("../../pages", __DIR__)
+      |> Path.join("form.html")
+      |> read_file()
+
+    %{conv | resp_body: content, status: status}
+  end
+
   def route(%{method: "GET", path: "/about"} = conv) do
-    %{conv | resp_body: "ABOUT PAGE.", status: 200}
+    {status, content} =
+      Path.expand("../../pages", __DIR__)
+      |> Path.join("about.html")
+      |> read_file()
+
+    %{conv | resp_body: content, status: status}
   end
 
   def route(%{method: "GET", path: "/wildthings"} = conv) do
@@ -97,6 +120,14 @@ defmodule ShadowWeave.Handler do
       404 => "Not Found",
       403 => "Forbidden"
     }[code]
+  end
+
+  defp read_file(file) do
+    case File.read(file) do
+      {:ok, content} -> {200, content}
+      {:error, :enoent} -> {404, "Page not found."}
+      {:error, reason} -> {500, "Cannot read from the void: #{reason}"}
+    end
   end
 end
 
@@ -156,6 +187,30 @@ Accept: */*
 
 """
 
+request8 = """
+GET /owlbears/new HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+request9 = """
+GET /pages/form HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+request10 = """
+GET /pages/doesnotexist HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
 response = ShadowWeave.Handler.handle_request(request)
 IO.puts(response)
 
@@ -179,3 +234,12 @@ IO.puts(response6)
 
 response7 = ShadowWeave.Handler.handle_request(request7)
 IO.puts(response7)
+
+response8 = ShadowWeave.Handler.handle_request(request8)
+IO.puts(response8)
+
+response9 = ShadowWeave.Handler.handle_request(request9)
+IO.puts(response9)
+
+response10 = ShadowWeave.Handler.handle_request(request10)
+IO.puts(response10)
