@@ -1,4 +1,13 @@
 defmodule ShadowWeave.Handler do
+  @moduledoc """
+  Handles HTTP requests.
+  """
+
+  @pages_path Path.expand("../../pages", __DIR__)
+
+  @doc """
+  Transforms the request into a response.
+  """
   def handle_request(request) do
     request
     |> parse()
@@ -39,18 +48,19 @@ defmodule ShadowWeave.Handler do
 
   def rewrite_path(conv), do: conv
 
-  def route(%{method: "GET", path: "/pages/" <> file} = conv) do
-    {status, content} =
-      Path.expand("../../pages", __DIR__)
-      |> Path.join(file <> ".html")
-      |> read_file()
+  # Purely academic..
+  # def route(%{method: "GET", path: "/pages/" <> file} = conv) do
+  #   {status, content} =
+  #     Path.expand("../../pages", __DIR__)
+  #     |> Path.join(file <> ".html")
+  #     |> read_file()
 
-    %{conv | resp_body: content, status: status}
-  end
+  #   %{conv | resp_body: content, status: status}
+  # end
 
   def route(%{method: "GET", path: "/owlbears/new"} = conv) do
     {status, content} =
-      Path.expand("../../pages", __DIR__)
+      @pages_path
       |> Path.join("form.html")
       |> read_file()
 
@@ -59,7 +69,7 @@ defmodule ShadowWeave.Handler do
 
   def route(%{method: "GET", path: "/about"} = conv) do
     {status, content} =
-      Path.expand("../../pages", __DIR__)
+      @pages_path
       |> Path.join("about.html")
       |> read_file()
 
