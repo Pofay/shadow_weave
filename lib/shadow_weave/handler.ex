@@ -2,8 +2,11 @@ defmodule ShadowWeave.Handler do
   @moduledoc """
   Handles HTTP requests.
   """
+  import ShadowWeave.Plugins, only: [rewrite_path: 1, log: 1, track: 1, emojify: 1]
+  import ShadowWeave.Parser, only: [parse: 1]
+  import ShadowWeave.FileHandler, only: [handle_file: 1]
 
-  @pages_path Path.expand("../../pages", __DIR__)
+  @pages_path Path.expand("pages", File.cwd!)
 
   @doc """
   Transforms the request into a response.
@@ -12,41 +15,12 @@ defmodule ShadowWeave.Handler do
     request
     |> parse()
     |> rewrite_path()
-    |> log
+    |> log()
     |> route()
-    |> emojiify()
+    |> emojify()
     |> track()
     |> format_response()
   end
-
-  def log(conv), do: IO.inspect(conv)
-
-  def parse(request) do
-    [method, path, _] =
-      request
-      |> String.split("\n")
-      |> List.first()
-      |> String.split(" ")
-
-    %{method: method, path: path, resp_body: "", status: nil}
-  end
-
-  def track(%{status: 404, path: path} = conv) do
-    IO.puts("Warning: #{path} is on the loose!")
-    conv
-  end
-
-  def track(conv), do: conv
-
-  def rewrite_path(%{path: "/wildlife"} = conv) do
-    %{conv | path: "/wildthings"}
-  end
-
-  def rewrite_path(%{path: "/owldbears?id=" <> id} = conv) do
-    %{conv | path: "/owlbears/#{id}"}
-  end
-
-  def rewrite_path(conv), do: conv
 
   # Purely academic..
   # def route(%{method: "GET", path: "/pages/" <> file} = conv) do
@@ -62,7 +36,7 @@ defmodule ShadowWeave.Handler do
     {status, content} =
       @pages_path
       |> Path.join("form.html")
-      |> read_file()
+      |> handle_file()
 
     %{conv | resp_body: content, status: status}
   end
@@ -71,7 +45,7 @@ defmodule ShadowWeave.Handler do
     {status, content} =
       @pages_path
       |> Path.join("about.html")
-      |> read_file()
+      |> handle_file()
 
     %{conv | resp_body: content, status: status}
   end
@@ -110,34 +84,12 @@ defmodule ShadowWeave.Handler do
     """
   end
 
-  def emojiify(%{status: 200} = conv) do
-    %{conv | resp_body: "✨ #{conv.resp_body} ✨"}
-  end
-
-  def emojiify(%{status: 404} = conv) do
-    %{conv | resp_body: "💀 #{conv.resp_body} 💀"}
-  end
-
-  def emojiify(%{status: 403} = conv) do
-    %{conv | resp_body: "⛔ #{conv.resp_body} ⛔"}
-  end
-
-  def emojiify(conv), do: conv
-
   defp status_reason(code) do
     %{
       200 => "OK",
       404 => "Not Found",
       403 => "Forbidden"
     }[code]
-  end
-
-  defp read_file(file) do
-    case File.read(file) do
-      {:ok, content} -> {200, content}
-      {:error, :enoent} -> {404, "Page not found."}
-      {:error, reason} -> {500, "Cannot read from the void: #{reason}"}
-    end
   end
 end
 
