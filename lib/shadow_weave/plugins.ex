@@ -1,5 +1,6 @@
 defmodule ShadowWeave.Plugins do
-  def track(%{status: 404, path: path} = conv) do
+  alias ShadowWeave.Conn
+  def track(%Conn{status: 404, path: path} = conv) do
     IO.puts("Warning: #{path} is on the loose!")
     conv
   end
@@ -8,26 +9,26 @@ defmodule ShadowWeave.Plugins do
 
   def log(conv), do: IO.inspect(conv)
 
-  def rewrite_path(%{path: "/wildlife"} = conv) do
-    %{conv | path: "/wildthings"}
+  def rewrite_path(%Conn{path: "/wildlife"} = conv) do
+    %Conn{conv | path: "/wildthings"}
   end
 
-  def rewrite_path(%{path: "/owldbears?id=" <> id} = conv) do
-    %{conv | path: "/owlbears/#{id}"}
+  def rewrite_path(%Conn{path: "/owldbears?id=" <> id} = conv) do
+    %Conn{conv | path: "/owlbears/#{id}"}
   end
 
   def rewrite_path(conv), do: conv
 
-  def emojify(%{status: 200} = conv) do
-    %{conv | resp_body: "✨ #{conv.resp_body} ✨"}
+  def emojify(%Conn{status: 200} = conv) do
+    %Conn{conv | resp_body: "✨ #{conv.resp_body} ✨"}
   end
 
-  def emojify(%{status: 404} = conv) do
-    %{conv | resp_body: "💀 #{conv.resp_body} 💀"}
+  def emojify(%Conn{status: 404} = conv) do
+    %Conn{conv | resp_body: "💀 #{conv.resp_body} 💀"}
   end
 
-  def emojify(%{status: 403} = conv) do
-    %{conv | resp_body: "⛔ #{conv.resp_body} ⛔"}
+  def emojify(%Conn{status: 403} = conv) do
+    %Conn{conv | resp_body: "⛔ #{conv.resp_body} ⛔"}
   end
 
   def emojify(conv), do: conv

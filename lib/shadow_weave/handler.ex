@@ -1,4 +1,5 @@
 defmodule ShadowWeave.Handler do
+  alias ShadowWeave.Conn
   @moduledoc """
   Handles HTTP requests.
   """
@@ -32,7 +33,7 @@ defmodule ShadowWeave.Handler do
   #   %{conv | resp_body: content, status: status}
   # end
 
-  def route(%{method: "GET", path: "/owlbears/new"} = conv) do
+  def route(%Conn{method: "GET", path: "/owlbears/new"} = conv) do
     {status, content} =
       @pages_path
       |> Path.join("form.html")
@@ -41,7 +42,7 @@ defmodule ShadowWeave.Handler do
     %{conv | resp_body: content, status: status}
   end
 
-  def route(%{method: "GET", path: "/about"} = conv) do
+  def route(%Conn{method: "GET", path: "/about"} = conv) do
     {status, content} =
       @pages_path
       |> Path.join("about.html")
@@ -50,23 +51,23 @@ defmodule ShadowWeave.Handler do
     %{conv | resp_body: content, status: status}
   end
 
-  def route(%{method: "GET", path: "/wildthings"} = conv) do
+  def route(%Conn{method: "GET", path: "/wildthings"} = conv) do
     %{conv | resp_body: "Owlbears, Beholders, Dragons", status: 200}
   end
 
-  def route(%{method: "GET", path: "/owlbears"} = conv) do
+  def route(%Conn{method: "GET", path: "/owlbears"} = conv) do
     %{conv | resp_body: "Margot, Richter, Dario", status: 200}
   end
 
-  def route(%{method: "GET", path: "/owlbears/" <> id} = conv) do
+  def route(%Conn{method: "GET", path: "/owlbears/" <> id} = conv) do
     %{conv | resp_body: "Owlbear #{id}", status: 200}
   end
 
-  def route(%{method: "DELETE", path: "/owlbears/" <> id} = conv) do
+  def route(%Conn{method: "DELETE", path: "/owlbears/" <> id} = conv) do
     %{conv | resp_body: "You do not have the strength to kill Owlbear #{id}.", status: 403}
   end
 
-  def route(%{method: _method, path: path, status: _status} = conv) do
+  def route(%Conn{method: _method, path: path, status: _status} = conv) do
     %{
       conv
       | resp_body: "Beware! You have entered Shar's Domain. 404 Error at #{path}",
@@ -74,7 +75,7 @@ defmodule ShadowWeave.Handler do
     }
   end
 
-  def format_response(conv) do
+  def format_response(%Conn{} = conv) do
     """
     HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
     Content-Type: text/html

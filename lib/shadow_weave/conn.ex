@@ -1,0 +1,3 @@
+defmodule ShadowWeave.Conn do
+  defstruct method: "", path: "", resp_body: "", status: nil
+end
