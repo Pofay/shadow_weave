@@ -46,4 +46,12 @@ defmodule ShadowWeaveTest do
     assert String.contains?(response, "200 OK")
     assert String.contains?(response, "Margot, Richter, Dario")
   end
+
+  test "functions that match on structs don't work with maps" do
+    conv = %{method: "GET", path: "/owlbears/new"}
+
+    assert_raise FunctionClauseError, fn ->
+      ShadowWeave.Handler.route(conv)
+    end
+  end
 end
