@@ -1,5 +1,6 @@
 defmodule ShadowWeave.Handler do
   alias ShadowWeave.Conn
+
   @moduledoc """
   Handles HTTP requests.
   """
@@ -7,7 +8,7 @@ defmodule ShadowWeave.Handler do
   import ShadowWeave.Parser, only: [parse: 1]
   import ShadowWeave.FileHandler, only: [handle_file: 1]
 
-  @pages_path Path.expand("pages", File.cwd!)
+  @pages_path Path.expand("pages", File.cwd!())
 
   @doc """
   Transforms the request into a response.
@@ -42,33 +43,38 @@ defmodule ShadowWeave.Handler do
     %{conv | resp_body: content, status: status}
   end
 
+  def route(%Conn{method: "POST", path: "/owlbears"} = conv) do
+    params = %{"name" => "Baloo", "type" => "Silver"}
+    %Conn{conv | resp_body: "Created a #{params["type"]} Owlbear named #{params["name"]}!", status: 201}
+  end
+
   def route(%Conn{method: "GET", path: "/about"} = conv) do
     {status, content} =
       @pages_path
       |> Path.join("about.html")
       |> handle_file()
 
-    %{conv | resp_body: content, status: status}
+    %Conn{conv | resp_body: content, status: status}
   end
 
   def route(%Conn{method: "GET", path: "/wildthings"} = conv) do
-    %{conv | resp_body: "Owlbears, Beholders, Dragons", status: 200}
+    %Conn{conv | resp_body: "Owlbears, Beholders, Dragons", status: 200}
   end
 
   def route(%Conn{method: "GET", path: "/owlbears"} = conv) do
-    %{conv | resp_body: "Margot, Richter, Dario", status: 200}
+    %Conn{conv | resp_body: "Margot, Richter, Dario", status: 200}
   end
 
   def route(%Conn{method: "GET", path: "/owlbears/" <> id} = conv) do
-    %{conv | resp_body: "Owlbear #{id}", status: 200}
+    %Conn{conv | resp_body: "Owlbear #{id}", status: 200}
   end
 
   def route(%Conn{method: "DELETE", path: "/owlbears/" <> id} = conv) do
-    %{conv | resp_body: "You do not have the strength to kill Owlbear #{id}.", status: 403}
+    %Conn{conv | resp_body: "You do not have the strength to kill Owlbear #{id}.", status: 403}
   end
 
   def route(%Conn{method: _method, path: path, status: _status} = conv) do
-    %{
+    %Conn{
       conv
       | resp_body: "Beware! You have entered Shar's Domain. 404 Error at #{path}",
         status: 404
@@ -174,6 +180,17 @@ Accept: */*
 
 """
 
+request11 = """
+POST /pages/owlbears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 21
+
+name=Baloo&type=Silver
+"""
+
 response = ShadowWeave.Handler.handle_request(request)
 IO.puts(response)
 
@@ -206,3 +223,6 @@ IO.puts(response9)
 
 response10 = ShadowWeave.Handler.handle_request(request10)
 IO.puts(response10)
+
+response11 = ShadowWeave.Handler.handle_request(request11)
+IO.puts(response11)

@@ -2,8 +2,10 @@ defmodule ShadowWeave.Parser do
   alias ShadowWeave.Conn
 
   def parse(request) do
+    [top, params] = String.split(request, "\n\n")
+
     [method, path, _] =
-      request
+      top
       |> String.split("\n")
       |> List.first()
       |> String.split(" ")
