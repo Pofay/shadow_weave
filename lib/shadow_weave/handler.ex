@@ -44,8 +44,7 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(%Conn{method: "POST", path: "/owlbears"} = conv) do
-    params = %{"name" => "Baloo", "type" => "Silver"}
-    %Conn{conv | resp_body: "Created a #{params["type"]} Owlbear named #{params["name"]}!", status: 201}
+    %Conn{conv | resp_body: "Created a #{conv.params["type"]} Owlbear named #{conv.params["name"]}!", status: 201}
   end
 
   def route(%Conn{method: "GET", path: "/about"} = conv) do
@@ -83,20 +82,12 @@ defmodule ShadowWeave.Handler do
 
   def format_response(%Conn{} = conv) do
     """
-    HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
+    HTTP/1.1 #{Conn.full_status(conv)}
     Content-Type: text/html
     Content-Length: #{byte_size(conv.resp_body)}
 
     #{conv.resp_body}
     """
-  end
-
-  defp status_reason(code) do
-    %{
-      200 => "OK",
-      404 => "Not Found",
-      403 => "Forbidden"
-    }[code]
   end
 end
 
