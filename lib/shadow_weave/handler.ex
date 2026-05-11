@@ -182,6 +182,18 @@ Content-Length: 21
 name=Baloo&type=Silver
 """
 
+request12 = """
+POST /pages/owlbears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: multipart/form-data
+Content-Length: 21
+
+name=Buckey&type=Brown
+"""
+
+
 response = ShadowWeave.Handler.handle_request(request)
 IO.puts(response)
 
@@ -217,3 +229,6 @@ IO.puts(response10)
 
 response11 = ShadowWeave.Handler.handle_request(request11)
 IO.puts(response11)
+
+response12 = ShadowWeave.Handler.handle_request(request12)
+IO.puts(response12)
