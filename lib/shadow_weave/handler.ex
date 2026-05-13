@@ -4,6 +4,9 @@ defmodule ShadowWeave.Handler do
   @moduledoc """
   Handles HTTP requests.
   """
+
+  alias ShadowWeave.OwlbearController
+
   import ShadowWeave.Plugins, only: [rewrite_path: 1, log: 1, track: 1, emojify: 1]
   import ShadowWeave.Parser, only: [parse: 1]
   import ShadowWeave.FileHandler, only: [handle_file: 1]
@@ -44,7 +47,7 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(%Conn{method: "POST", path: "/owlbears"} = conv) do
-    %Conn{conv | resp_body: "Created a #{conv.params["type"]} Owlbear named #{conv.params["name"]}!", status: 201}
+    OwlbearController.post(conv)
   end
 
   def route(%Conn{method: "GET", path: "/about"} = conv) do
@@ -61,11 +64,12 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(%Conn{method: "GET", path: "/owlbears"} = conv) do
-    %Conn{conv | resp_body: "Margot, Richter, Dario", status: 200}
+    OwlbearController.index(conv)
   end
 
   def route(%Conn{method: "GET", path: "/owlbears/" <> id} = conv) do
-    %Conn{conv | resp_body: "Owlbear #{id}", status: 200}
+    params = Map.put(conv.params, "id", id)
+    OwlbearController.show(conv, params)
   end
 
   def route(%Conn{method: "DELETE", path: "/owlbears/" <> id} = conv) do
