@@ -47,7 +47,7 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(%Conn{method: "POST", path: "/owlbears"} = conv) do
-    OwlbearController.post(conv)
+    OwlbearController.create(conv, conv.params)
   end
 
   def route(%Conn{method: "GET", path: "/about"} = conv) do

@@ -9,7 +9,7 @@ defmodule ShadowWeave.OwlbearController do
     %Conn{conv | resp_body: "Owlbear #{id}", status: 200}
   end
 
-  def post(%Conn{} = conv) do
-    %Conn{conv | resp_body: "Created a #{conv.params["type"]} Owlbear named #{conv.params["name"]}!", status: 201}
+  def create(%Conn{} = conv, params) do
+    %Conn{conv | resp_body: "Created a #{params["type"]} Owlbear named #{params["name"]}!", status: 201}
   end
 end
