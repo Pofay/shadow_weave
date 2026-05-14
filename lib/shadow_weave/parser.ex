@@ -21,14 +21,21 @@ defmodule ShadowWeave.Parser do
   def parse_params(_, _), do: %{}
 
   def parse_headers(header_lines) do
-    do_parse_headers(header_lines, %{})
+    Enum.reduce(header_lines, %{}, fn header_line, acc ->
+      [header_key, header_value] = String.split(header_line, ": ", trim: true)
+      Map.put(acc, header_key, header_value)
+    end)
   end
 
-  defp do_parse_headers([], headers), do: headers
+  # def parse_headers(header_lines) do
+  #   do_parse_headers(header_lines, %{})
+  # end
 
-  defp do_parse_headers([head | tail], headers) do
-    [header_key, header_value] = String.split(head, ": ", trim: true)
-    updated_headers = Map.put(headers, header_key, header_value)
-    do_parse_headers(tail, updated_headers)
-  end
+  # defp do_parse_headers([], headers), do: headers
+
+  # defp do_parse_headers([head | tail], headers) do
+  #   [header_key, header_value] = String.split(head, ": ", trim: true)
+  #   updated_headers = Map.put(headers, header_key, header_value)
+  #   do_parse_headers(tail, updated_headers)
+  # end
 end

@@ -73,7 +73,8 @@ defmodule ShadowWeave.Handler do
   end
 
   def route(%Conn{method: "DELETE", path: "/owlbears/" <> id} = conv) do
-    %Conn{conv | resp_body: "You do not have the strength to kill Owlbear #{id}.", status: 403}
+    params = Map.put(conv.params, "id", id)
+    OwlbearController.delete(conv, params)
   end
 
   def route(%Conn{method: _method, path: path, status: _status} = conv) do

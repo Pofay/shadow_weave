@@ -26,6 +26,11 @@ defmodule ShadowWeave.OwlbearController do
     }
   end
 
+  def delete(%Conn{} = conv, %{"id" => id}) do
+    owlbear = OwlbearSanctuary.get_owlbear(id)
+    %Conn{conv | resp_body: "You do not have the strength to kill Owlbear #{owlbear.id}: #{owlbear.name}.", status: 403}
+  end
+
   defp owlbear_item(owlbear), do: "<li>#{owlbear.name} - #{owlbear.type}</li>"
 
   defp wrap_into_ul(items) do
