@@ -1,0 +1,5 @@
+<h1>Show Owlbear</h1>
+<p>
+Name: <%= owlbear.name %>, Type: <%= owlbear.type %>
+Is Aggressive: <strong><%= owlbear.aggressive %></strong>
+</p>

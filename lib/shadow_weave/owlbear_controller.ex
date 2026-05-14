@@ -1,21 +1,23 @@
 defmodule ShadowWeave.OwlbearController do
   alias ShadowWeave.Owlbear
+  alias ShadowWeave.OwlbearView
   alias ShadowWeave.Conn
   alias ShadowWeave.OwlbearSanctuary
 
+  @template_path Path.expand("../../templates", __DIR__)
+
   def index(%Conn{} = conv) do
-    items =
+    owlbears =
       OwlbearSanctuary.all_owlbears()
       |> Enum.sort(&Owlbear.order_ascending/2)
-      |> Enum.map_join(&owlbear_item/1)
-      |> wrap_into_ul()
 
-    %Conn{conv | resp_body: items, status: 200}
+    render(conv, "index.eex", owlbears: owlbears)
   end
 
   def show(%Conn{} = conv, %{"id" => id}) do
     owlbear = OwlbearSanctuary.get_owlbear(id)
-    %Conn{conv | resp_body: "<h1>Owlbear - #{owlbear.id}: #{owlbear.name}</h1>", status: 200}
+
+    render(conv, "show.eex", owlbear: owlbear)
   end
 
   def create(%Conn{} = conv, params) do
@@ -28,12 +30,22 @@ defmodule ShadowWeave.OwlbearController do
 
   def delete(%Conn{} = conv, %{"id" => id}) do
     owlbear = OwlbearSanctuary.get_owlbear(id)
-    %Conn{conv | resp_body: "You do not have the strength to kill Owlbear #{owlbear.id}: #{owlbear.name}.", status: 403}
+
+    %Conn{
+      conv
+      | resp_body: "You do not have the strength to kill Owlbear #{owlbear.id}: #{owlbear.name}.",
+        status: 403
+    }
   end
 
-  defp owlbear_item(owlbear), do: "<li>#{owlbear.name} - #{owlbear.type}</li>"
+  defp render(%Conn{} = conv, template, bindings \\ []) do
+    content =
+      case template do
+        "index.eex" -> OwlbearView.index(bindings[:owlbears])
+        "show.eex" -> OwlbearView.show(bindings[:owlbear])
+        _ -> @template_path |> Path.join(template) |> EEx.eval_file(bindings)
+      end
 
-  defp wrap_into_ul(items) do
-    "<ul>#{items}</ul>"
+    %Conn{conv | resp_body: content, status: 200}
   end
 end

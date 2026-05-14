@@ -1,0 +1,9 @@
+<h1>All the Owlbears!</h1>
+
+<ul>
+  <%= for owlbear <- owlbears do %>
+    <li><%= owlbear.name %> - <%= owlbear.type %></li>
+  <% end %>
+</ul>
+
+<%= inspect(owlbears) %>
