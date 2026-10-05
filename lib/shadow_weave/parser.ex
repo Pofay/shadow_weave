@@ -1,4 +1,7 @@
 defmodule ShadowWeave.Parser do
+  @moduledoc """
+  Parser addon for use in the ShadowWeave web server.
+  """
   alias ShadowWeave.Conn
 
   def parse(request) do
@@ -12,6 +15,16 @@ defmodule ShadowWeave.Parser do
     %Conn{method: method, path: path, params: params, resp_body: "", status: nil}
   end
 
+  @doc """
+  Parses the given param string of the form `key1=value1&key2=value2` into a map with corresponding keys and values
+
+  ## Examples
+  iex> params_string = "name=Richter&type=Mountain"
+  iex> ShadowWeave.Parser.parse_params("application/x-www-form-urlencoded", params_string)
+  %{"name" => "Richter", "type" => "Mountain"}
+  iex> ShadowWeave.Parser.parse_params("multipart/form-data", params_string)
+  %{}
+  """
   def parse_params("application/x-www-form-urlencoded", params_string) do
     params_string
     |> String.trim()
