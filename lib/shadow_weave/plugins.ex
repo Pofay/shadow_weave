@@ -1,13 +1,22 @@
 defmodule ShadowWeave.Plugins do
   alias ShadowWeave.Conn
+
   def track(%Conn{status: 404, path: path} = conv) do
-    IO.puts("Warning: #{path} is on the loose!")
+    if Mix.env() != :test do
+      IO.puts("Warning: #{path} is on the loose!")
+    end
     conv
   end
 
   def track(conv), do: conv
 
-  def log(conv), do: IO.inspect(conv)
+  def log(conv) do
+    if Mix.env() == :dev do
+      IO.inspect(conv)
+    end
+
+    conv
+  end
 
   def rewrite_path(%Conn{path: "/wildlife"} = conv) do
     %Conn{conv | path: "/wildthings"}
