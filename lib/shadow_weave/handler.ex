@@ -96,54 +96,6 @@ defmodule ShadowWeave.Handler do
   end
 end
 
-request = """
-GET /wildlife HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-request2 = """
-GET /owlbears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-request3 = """
-GET /yeti HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-request4 = """
-GET /owlbears/1 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-request5 = """
-DELETE /owlbears/2 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-request6 = """
-GET /owldbears?id=3 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
 request7 = """
 GET /about HTTP/1.1
 Host: example.com
@@ -197,28 +149,6 @@ Content-Length: 21
 
 name=Buckey&type=Brown
 """
-
-
-response = ShadowWeave.Handler.handle_request(request)
-IO.puts(response)
-
-response2 = ShadowWeave.Handler.handle_request(request2)
-IO.puts(response2)
-
-response3 = ShadowWeave.Handler.handle_request(request3)
-IO.puts(response3)
-
-response4 = ShadowWeave.Handler.handle_request(request4)
-IO.puts(response4)
-
-response5 = ShadowWeave.Handler.handle_request(request5)
-IO.puts(response5)
-
-response6 = ShadowWeave.Handler.handle_request(request6)
-IO.puts(response6)
-
-response6 = ShadowWeave.Handler.handle_request(request6)
-IO.puts(response6)
 
 response7 = ShadowWeave.Handler.handle_request(request7)
 IO.puts(response7)
