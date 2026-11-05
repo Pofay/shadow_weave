@@ -11,12 +11,3 @@ defmodule ShadowWeave.ExampleMatches do
     %{conv | status: 200, resp_body: "DARIUS THE OWLBEAR is OWLBEAR number #{id}"}
   end
 end
-
-# conv1 = %{status: nil, path: "/owlbears", method: "GET", resp_body: ""}
-# conv2 = %{status: nil, path: "/owlbears", method: "POST", resp_body: ""}
-# conv3 = %{status: nil, path: "/owlbears/1", method: "GET", resp_body: ""}
-
-# convs = [conv1, conv2, conv3]
-
-# Enum.map(convs, &ShadowWeave.ExampleMatches.route/1)
-# |> Enum.each(&IO.inspect/1)
