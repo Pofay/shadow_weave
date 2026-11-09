@@ -122,4 +122,35 @@ defmodule HandlerTest do
 
     assert response == expected
   end
+
+  test "/about returns the correct response" do
+    request =
+      """
+      GET /about HTTP/1.1
+      Host: example.com
+      User-Agent: ExampleBrowser/1.0
+      Accept: */*
+
+      """
+
+    expected = """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 327
+
+    ✨ <h1>Clark's Wildthings Refuge</h1>
+
+    <blockquote>
+    When we contemplate the whole globe as one great dewdrop,
+    striped and dotted with continents and islands, flying
+    through space with other stars all singing and shining
+    together as one, the whole universe appears as an infinite
+    storm of beauty. -- John Muir
+    </blockquote> ✨
+    """
+
+    response = handle_request(request)
+
+    assert response == expected
+  end
 end
