@@ -154,31 +154,36 @@ defmodule HandlerTest do
     assert response == expected
   end
 
-  test "GET /owlbears/new returns the correct response" do
+  test "GET /api/owlbears" do
     request = """
-    GET /owlbears/new HTTP/1.1
+    GET /api/owlbears HTTP/1.1
     Host: example.com
     User-Agent: ExampleBrowser/1.0
     Accept: */*
 
     """
 
-    expected = """
-    HTTP/1.1 200 OK
-    Content-Type: text/html
-    Content-Length: 102
-
-    ✨ <h1>New Owlbear</h1>
-    <form action="/owlbears" method="POST">
-      <input type="text" name="name" placeholder="Name">
-      <input type="text" name="type" placeholder="Type">
-      <input type="checkbox" name="is_aggressive"> Is Aggressive?
-      <button type="submit">Create Owlbear</button>
-    </form> ✨
-    """
-
     response = handle_request(request)
 
-    assert response == expected
+    expected_response = """
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    Content-Length: 483
+
+    ✨[{"id":1,"name":"Margot","type":"Forest","aggressive":false},
+     {"id":2,"name":"Richter","type":"Mountain","aggressive":true},
+     {"id":3,"name":"Dario","type":"Swamp","aggressive":false},
+     {"id":4,"name":"Sophie","type":"Cave","aggressive":true},
+     {"id":5,"name":"Luna","type":"Forest","aggressive":false},
+     {"id":6,"name":"Gideon","type":"Mountain","aggressive":true},
+     {"id":7,"name":"Isabella","type":"Swamp","aggressive":false},
+     {"id":8,"name":"Aurora","type":"Cave","aggressive":true}]✨
+    """
+
+    assert remove_whitespace(response) == remove_whitespace(expected_response)
+  end
+
+  defp remove_whitespace(text) do
+    String.replace(text, ~r{\s}, "")
   end
 end

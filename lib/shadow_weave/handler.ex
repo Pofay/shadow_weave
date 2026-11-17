@@ -6,6 +6,7 @@ defmodule ShadowWeave.Handler do
   """
 
   alias ShadowWeave.OwlbearController
+  alias ShadowWeave.Api.OwlbearController, as: ApiOwlbearController
 
   import ShadowWeave.Plugins, only: [rewrite_path: 1, log: 1, track: 1, emojify: 1]
   import ShadowWeave.Parser, only: [parse: 1]
@@ -67,6 +68,11 @@ defmodule ShadowWeave.Handler do
     OwlbearController.index(conv)
   end
 
+  def route(%Conn{method: "GET", path: "/api/owlbears"} = conv) do
+    ApiOwlbearController.index(conv)
+  end
+
+
   def route(%Conn{method: "GET", path: "/owlbears/" <> id} = conv) do
     params = Map.put(conv.params, "id", id)
     OwlbearController.show(conv, params)
@@ -88,7 +94,7 @@ defmodule ShadowWeave.Handler do
   def format_response(%Conn{} = conv) do
     """
     HTTP/1.1 #{Conn.full_status(conv)}
-    Content-Type: text/html
+    Content-Type: #{conv.resp_headers["Content-Type"]}
     Content-Length: #{byte_size(conv.resp_body)}
 
     #{conv.resp_body}
@@ -96,63 +102,48 @@ defmodule ShadowWeave.Handler do
   end
 end
 
-request8 = """
-GET /owlbears/new HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# request8 = """
+# GET /owlbears/new HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-"""
+# """
 
-request9 = """
-GET /pages/form HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# request9 = """
+# GET /pages/form HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-"""
+# """
 
-request10 = """
-GET /pages/doesnotexist HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# request10 = """
+# GET /pages/doesnotexist HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-"""
+# """
 
-request11 = """
-POST /pages/owlbears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 21
+# request11 = """
+# POST /pages/owlbears HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
+# Content-Type: application/x-www-form-urlencoded
+# Content-Length: 21
 
-name=Baloo&type=Silver
-"""
+# name=Baloo&type=Silver
+# """
 
-request12 = """
-POST /pages/owlbears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-Content-Type: multipart/form-data
-Content-Length: 21
+# request12 = """
+# POST /pages/owlbears HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
+# Content-Type: multipart/form-data
+# Content-Length: 21
 
-name=Buckey&type=Brown
-"""
-
-response8 = ShadowWeave.Handler.handle_request(request8)
-IO.puts(response8)
-
-response9 = ShadowWeave.Handler.handle_request(request9)
-IO.puts(response9)
-
-response10 = ShadowWeave.Handler.handle_request(request10)
-IO.puts(response10)
-
-response11 = ShadowWeave.Handler.handle_request(request11)
-IO.puts(response11)
-
-response12 = ShadowWeave.Handler.handle_request(request12)
-IO.puts(response12)
+# name=Buckey&type=Brown
+# """

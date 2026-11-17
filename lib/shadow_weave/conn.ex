@@ -1,5 +1,5 @@
 defmodule ShadowWeave.Conn do
-  defstruct method: "", path: "", params: %{}, headers: %{}, resp_body: "", status: nil
+  defstruct method: "", path: "", params: %{}, headers: %{}, resp_body: "", status: nil, resp_headers: %{"Content-Type" => "text/html"}
 
   def full_status(conn) do
     "#{conn.status} #{status_reason(conn.status)}"
