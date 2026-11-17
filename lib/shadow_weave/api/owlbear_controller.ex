@@ -4,6 +4,12 @@ defmodule ShadowWeave.Api.OwlbearController do
       ShadowWeave.OwlbearSanctuary.all_owlbears()
       |> Jason.encode!()
 
-    %{conv | status: 200, resp_body: json, resp_headers: %{"Content-Type" => "application/json"}}
+    conv = put_resp_content_type(conv, "application/json")
+
+    %{conv | status: 200, resp_body: json}
+  end
+
+  defp put_resp_content_type(%ShadowWeave.Conn{} = conv, content_type) do
+    %ShadowWeave.Conn{conv | resp_headers: Map.put(conv.resp_headers, "Content-Type", content_type)}
   end
 end
