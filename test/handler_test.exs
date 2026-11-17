@@ -153,4 +153,32 @@ defmodule HandlerTest do
 
     assert response == expected
   end
+
+  test "GET /owlbears/new returns the correct response" do
+    request = """
+    GET /owlbears/new HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
+    """
+
+    expected = """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 102
+
+    ✨ <h1>New Owlbear</h1>
+    <form action="/owlbears" method="POST">
+      <input type="text" name="name" placeholder="Name">
+      <input type="text" name="type" placeholder="Type">
+      <input type="checkbox" name="is_aggressive"> Is Aggressive?
+      <button type="submit">Create Owlbear</button>
+    </form> ✨
+    """
+
+    response = handle_request(request)
+
+    assert response == expected
+  end
 end

@@ -96,14 +96,6 @@ defmodule ShadowWeave.Handler do
   end
 end
 
-request7 = """
-GET /about HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
 request8 = """
 GET /owlbears/new HTTP/1.1
 Host: example.com
@@ -149,9 +141,6 @@ Content-Length: 21
 
 name=Buckey&type=Brown
 """
-
-response7 = ShadowWeave.Handler.handle_request(request7)
-IO.puts(response7)
 
 response8 = ShadowWeave.Handler.handle_request(request8)
 IO.puts(response8)
