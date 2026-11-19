@@ -1,4 +1,6 @@
 defmodule ShadowWeave.HttpServer do
+  alias ShadowWeave.Handler
+
   @doc """
   Starts the server on the given `port` of localhost.
   """
@@ -45,7 +47,7 @@ defmodule ShadowWeave.HttpServer do
   def serve(client_socket) do
     client_socket
     |> read_request
-    |> generate_response
+    |> Handler.handle_request
     |> write_response(client_socket)
   end
 
@@ -60,19 +62,6 @@ defmodule ShadowWeave.HttpServer do
     IO.puts(request)
 
     request
-  end
-
-  @doc """
-  Returns a generic HTTP response.
-  """
-  def generate_response(_request) do
-    """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/plain\r
-    Content-Length: 6\r
-    \r
-    Hello!
-    """
   end
 
   @doc """
