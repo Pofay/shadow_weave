@@ -5,5 +5,3 @@
     <li><%= owlbear.name %> - <%= owlbear.type %></li>
   <% end %>
 </ul>
-
-<%= inspect(owlbears) %>
