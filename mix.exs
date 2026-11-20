@@ -22,6 +22,7 @@ defmodule ShadowWeave.MixProject do
   defp deps do
     [
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:thousand_island, "~> 1.0"},
       {:jason, "~> 1.4"}
     ]
   end
